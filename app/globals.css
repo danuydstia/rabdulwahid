@@ -1,26 +1,944 @@
-@import "tailwindcss";
+/* ─────────────────────────────────────────────
+   GLOBAL STYLES — Rerey Portfolio
+───────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --red: #C41230;
+  --bg: #090103;
+  --bg2: #100106;
+  --text: #F2E6E4;
+  --muted: #6E5A58;
+  --dim: #3A2828;
+  --border: rgba(196, 18, 48, 0.12);
+  --gap: 2px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── CURSOR ── */
+.cur-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  will-change: transform;
+}
+
+.cur-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9998;
+  pointer-events: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(196, 18, 48, 0.4);
+  will-change: transform;
+}
+
+/* ── SHARED UTILITIES ── */
+.dot {
+  color: var(--red);
+}
+
+.red {
+  color: var(--red);
+}
+
+.wh-tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── NAVBAR ── */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem 2.5rem;
+  transition: background 0.3s, border-color 0.3s;
+  border-bottom: 1px solid transparent;
+}
+
+.nav--stuck {
+  background: rgba(9, 1, 3, 0.86);
+  backdrop-filter: blur(16px);
+  border-bottom-color: var(--border);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+
+.nav-center {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-center a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.nav-center a:hover {
+  color: var(--text);
+}
+
+.avail {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.32rem 0.85rem;
+  border-radius: 100px;
+  border: 1px solid var(--red);
+  color: var(--red);
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: -20%;
+  transform-origin: center;
+  background: radial-gradient(
+    ellipse 90% 70% at 40% 35%,
+    #3D0008 0%,
+    #160007 42%,
+    #090103 100%
+  );
+  will-change: transform;
+}
+
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.hero-vig {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 120% 100% at 50% 60%,
+    transparent 30%,
+    rgba(9, 1, 3, 0.96) 100%
+  );
+}
+
+.hero-photo-wrap {
+  position: absolute;
+  bottom: 0;
+  left: -15%;
+  transform: translateX(-62%);
+  z-index: 2;
+  width: clamp(800px, 90vw, 1400px);
+  height: 120%;
+  pointer-events: none;
+}
+
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  display: block;
+}
+
+.hero-photo-fade-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 12%;
+  background: linear-gradient(0deg, var(--bg) 0%, transparent 100%);
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 0 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.hero-tag-wrap {
+  will-change: transform;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+.hero-name-wrap {
+  will-change: transform;
+  line-height: 0.85;
+}
+
+.hero-name {
+  font-family: 'Bebas Neue', sans-serif;
+  display: flex;
+  align-items: flex-end;
+  gap: 2vw;
+}
+
+.hero-first {
+  font-size: clamp(6rem, 18vw, 18rem);
+  line-height: 0.82;
+  letter-spacing: 0.01em;
+  background: linear-gradient(170deg, #F2E6E4 0%, #7A2A2A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 0;
+}
+
+.hero-last {
+  font-size: clamp(2.5rem, 7vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding-bottom: 0.5vw;
+  position: relative;
+  z-index: 3;
+}
+
+.hero-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--dim);
+}
+
+.hero-year,
+.hero-count {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.1em;
+}
+
+.hero-cta {
+  padding: 0.72rem 1.8rem;
+  border-radius: 2px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.hero-cta:hover {
+  background: #df1535;
+  transform: translateY(-2px);
+}
+
+/* Spinning badge */
+.spin-badge {
+  position: absolute;
+  bottom: 3.5rem;
+  right: 3.5rem;
+  z-index: 3;
+  width: 110px;
+  height: 110px;
+  will-change: transform;
+  cursor: none;
+}
+
+.spin-svg {
+  width: 100%;
+  height: 100%;
+  color: var(--muted);
+  animation: spin 14s linear infinite;
+  fill: none;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--red);
+}
+
+/* ── TICKER ── */
+.ticker-wrap {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 0;
+  background: var(--bg2);
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: tickerRun 22s linear infinite;
+}
+
+@keyframes tickerRun {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  white-space: nowrap;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 1.2rem;
+  font-family: 'DM Mono', monospace;
+}
+
+.ticker-dot {
+  color: var(--red);
+  margin-left: 1.2rem;
+}
+
+/* ── WORK SECTION ── */
+.work-section {
+  padding: 4rem 2.5rem;
+}
+
+.work-head {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+}
+
+.wh-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 4vw, 4rem);
+  letter-spacing: 0.03em;
+}
+
+.wh-title em {
+  color: var(--red);
+  font-style: normal;
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+ 
+/* ── CARD ── */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  background: var(--bg2);
+  cursor: none;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+ 
+.card:hover {
+  background: #130108;
+  border-color: var(--border);
+}
+ 
+/* Red accent line at bottom — slides in on hover */
+.card-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  width: 0%;
+  background: var(--red);
+  transition: width 0.4s ease;
+}
+ 
+.card:hover .card-line {
+  width: 100%;
+}
+ 
+/* ── MEDIA (left, fixed square) ── */
+.card-media {
+  position: relative;
+  flex-shrink: 0;
+  width: 120px;
+  height: 84px;
+  overflow: hidden;
+}
+ 
+.card-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.45) brightness(0.55);
+  transition: filter 0.4s ease;
+  z-index: 1;
+}
+ 
+.card:hover .card-thumb {
+  filter: saturate(0.7) brightness(0.7);
+}
+ 
+.card-video-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+}
+ 
+.card-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+  pointer-events: none;
+  filter: saturate(0.6) brightness(0.65);
+}
+ 
+.card-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(
+    135deg,
+    rgba(9, 1, 3, 0.5) 0%,
+    transparent 100%
+  );
+}
+ 
+/* Category badge — top-left of media */
+.card-cat {
+  position: absolute;
+  bottom: 5px;
+  left: 6px;
+  z-index: 5;
+  font-size: 0.48rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+  font-family: 'DM Mono', monospace;
+  background: rgba(9, 1, 3, 0.75);
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+}
+ 
+/* Index — top-right of media */
+.card-idx {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  z-index: 5;
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+  color: rgba(242, 230, 228, 0.25);
+  font-family: 'DM Mono', monospace;
+}
+ 
+/* ── BODY (right, text) ── */
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.7rem 0.9rem;
+  gap: 0.15rem;
+  min-width: 0;
+  position: relative;
+}
+ 
+.card-body-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+ 
+.card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+ 
+.card:hover .card-title {
+  color: var(--red);
+}
+ 
+.card-year {
+  font-size: 0.55rem;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+ 
+.card-sub {
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
+.card-client {
+  font-size: 0.6rem;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+}
+ 
+/* Arrow — bottom right, fades in on hover */
+.card-arrow {
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.8rem;
+  color: var(--red);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+ 
+.card:hover .card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+ 
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .bento { grid-template-columns: 1fr; }
+ 
+  .card-media {
+    width: 100px;
+    height: 72px;
+  }
+}
+ 
+@media (max-width: 700px) {
+  .bento { grid-template-columns: 1fr; }
+}
+
+.ct-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.2rem;
+}
+
+.ct-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.45rem;
+  letter-spacing: 0.04em;
+}
+
+.ct-year {
+  font-size: 0.62rem;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+.ct-sub {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.1rem;
+}
+
+.ct-client {
+  font-size: 0.7rem;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+}
+
+/* ─────────────────────────────────────────────
+   ABOUT — tambahkan/ganti di globals.css
+───────────────────────────────────────────── */
+
+/* ── ABOUT SECTION ── */
+.about-section {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 0;
+  min-height: 90vh;
+  border-top: 1px solid var(--border);
+}
+
+/* ── LEFT: Visual ── */
+.about-visual {
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+
+.av-inner {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.av-inner img {
+  width: 100%;
+  height: 110%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  filter: saturate(0.6) brightness(0.5);
+  will-change: transform;
+}
+
+/* Red gradient overlay */
+.av-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(61, 0, 8, 0.55) 0%,
+    rgba(9, 1, 3, 0.3) 50%,
+    rgba(9, 1, 3, 0.85) 100%
+  );
+  pointer-events: none;
+}
+
+/* Bottom label */
+.av-label {
+  position: absolute;
+  bottom: 2rem;
+  left: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  z-index: 2;
+}
+
+.av-label span {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(242, 230, 228, 0.55);
+  font-family: 'DM Mono', monospace;
+  display: inline-block;
+}
+
+.av-label span:first-child {
+  color: var(--text);
+  font-size: 0.7rem;
+}
+
+/* Vertical decorative text */
+.av-vertical-text {
+  position: absolute;
+  top: 50%;
+  right: 1.2rem;
+  transform: translateY(-50%) rotate(90deg);
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(242, 230, 228, 0.18);
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+/* ── RIGHT: Text ── */
+.about-text {
+  padding: 5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+}
+
+/* Eyebrow row: tag + line */
+.about-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.eyebrow-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  max-width: 80px;
+}
+
+/* Headline */
+.about-h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.4rem, 3.8vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: 0.02em;
+}
+
+/* Body paragraphs */
+.about-p {
+  color: var(--muted);
+  line-height: 1.85;
+  font-size: 0.9rem;
+  font-weight: 300;
+  max-width: 46ch;
+}
+
+.about-p strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Stats */
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--dim);
+  border-bottom: 1px solid var(--dim);
+}
+
+.as-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.as-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  color: var(--red);
+  line-height: 1;
+}
+
+.as-lbl {
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+}
+
+/* Tools */
+.tools-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 0.75rem;
+}
+
+.tools-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tool {
+  padding: 0.32rem 0.9rem;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.7rem;
+  background: rgba(196, 18, 48, 0.04);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.06em;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.tool:hover {
+  color: var(--text);
+  border-color: rgba(196, 18, 48, 0.35);
+  background: rgba(196, 18, 48, 0.08);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .about-section {
+    grid-template-columns: 1fr;
+  }
+
+  .about-visual {
+    display: none;
+  }
+
+  .about-text {
+    padding: 3.5rem 1.5rem;
+  }
+
+  .about-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── CONTACT ── */
+.contact-section {
+  position: relative;
+  padding: 9rem 2.5rem;
+  text-align: center;
+  overflow: hidden;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+}
+
+.contact-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 80% at 50% 110%,
+    rgba(61, 0, 8, 0.55) 0%,
+    transparent 70%
+  );
+}
+
+.contact-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(4rem, 11vw, 10rem);
+  line-height: 0.9;
+  margin: 0.6rem 0 2.5rem;
+  letter-spacing: 0.02em;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.4rem;
+  font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--red);
+  padding-bottom: 0.2rem;
+  margin-bottom: 3rem;
+  transition: color 0.2s, gap 0.28s;
+}
+
+.contact-link:hover {
+  color: var(--red);
+  gap: 2rem;
+}
+
+.arr {
+  font-size: 1.3em;
+}
+
+.soc-row {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+}
+
+.soc {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: none;
+  transition: color 0.2s;
+}
+
+.soc:hover {
+  color: var(--text);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .bento { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .bento { grid-template-columns: repeat(2, 1fr); }
+  .nav-center,
+  .nav-right { display: none; }
+  .hero-last { display: none; }
+  .about-section { grid-template-columns: 1fr; }
+  .about-visual { display: none; }
+  .about-text { padding: 3.5rem 1.5rem; }
+  .about-stats { grid-template-columns: repeat(2, 1fr); }
+  .work-section { padding: 4rem 1.4rem; }
+  .contact-section { padding: 6rem 1.4rem; }
+  .spin-badge { width: 80px; height: 80px; bottom: 2rem; right: 2rem; }
+}
+
+@media (max-width: 700px) {
+  .bento { grid-template-columns: repeat(2, 1fr); }
 }

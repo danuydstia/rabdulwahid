@@ -38,7 +38,7 @@ export default function About() {
       <div className="about-visual">
         <div className="av-inner">
           <motion.img
-            src="/rerey3.png"
+            src="/rabdulwahid/rerey3.png"
             alt="Rerey Abdul Wahid"
             style={{ y: imgY }}
           />

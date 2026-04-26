@@ -56,7 +56,7 @@ export default function Hero() {
 
       {/* Portrait photo — behind the text */}
       <motion.div className="hero-photo-wrap" style={{ y: photoY, opacity: fade }}>
-        <img src="/rerey.png" alt="Rerey" className="hero-photo" />
+        <img src="/rabdulwahid/rerey.png" alt="Rerey" className="hero-photo" />
         <div className="hero-photo-fade-bottom" />
       </motion.div>
 

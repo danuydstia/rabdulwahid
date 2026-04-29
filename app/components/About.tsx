@@ -95,14 +95,16 @@ export default function About() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <strong>Nama saya adalah Rerey</strong>, seorang video editor dan colorist
-          berbasis di Batam, Indonesia. Saya memiliki pengalaman lebih dari delapan tahun
-          dalam menangani berbagai proyek — mulai dari iklan korporat, film pendek,
-          dokumenter, hingga musik video — dengan pendekatan yang mengutamakan
-          presisi naratif dan estetika sinematik.
+          I am currently pursuing a Diploma in Multimedia
+          Engineering Technology at the State Polytechnic
+          of Batam, specializing in video editing. My
+          passion lies in the art of documentary video
+          editing, where I focus on crafting compelling
+          narratives through visuals. I am dedicated to
+          creating high-quality, engaging content that
+          effectively communicates stories and messages.
         </motion.p>
-
-        <motion.p
+        {/* <motion.p
           className="about-p"
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -113,7 +115,7 @@ export default function About() {
           menyampaikan cerita. Mulai dari tahap offline editing hingga color grading
           akhir, saya selalu menjaga standar yang konsisten: memberikan hasil terbaik
           di setiap detail.
-        </motion.p>
+        </motion.p> */}
 
         {/* Stats grid */}
         <motion.div

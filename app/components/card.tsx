@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 import type { Project } from "../data/project";
 
@@ -50,11 +50,22 @@ function buildVimeoSrc(url: string): string {
 export default function Card({ p, i }: CardProps) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: false, margin: "-40px" });
+
+  // Track whether card has ever been in view — persists across re-renders
   const hasBeenSeen = useRef(false);
   if (inView) hasBeenSeen.current = true;
 
-  // Thumbnail stays visible until iframe fires onLoad
+  // ✅ FIX: useRef sebagai "permanent latch" — tidak pernah reset ke false
+  // meski komponen re-render. useState hanya dipakai untuk trigger repaint.
+  const videoReadyLatch = useRef(false);
   const [videoReady, setVideoReady] = useState(false);
+
+  // Idempotent: hanya trigger setState sekali, selanjutnya no-op
+  const markVideoReady = useCallback(() => {
+    if (videoReadyLatch.current) return;
+    videoReadyLatch.current = true;
+    setVideoReady(true);
+  }, []);
 
   const videoType = getVideoType(p.video);
 
@@ -69,19 +80,29 @@ export default function Card({ p, i }: CardProps) {
     >
       <div className="card-media">
 
-        {/* Thumbnail — selalu ada, fade out setelah video siap */}
+        {/*
+          Thumbnail — selalu ada di DOM.
+          Fade out setelah video benar-benar siap.
+          videoReadyLatch.current dipakai langsung untuk initial style
+          supaya saat re-render setelah ready, thumbnail langsung transparan
+          tanpa perlu tunggu setState cycle berikutnya.
+        */}
         <img
           src={p.thumbnail}
           alt={p.title}
           loading="lazy"
           className="card-thumb"
           style={{
-            opacity: videoReady ? 0 : 1,
+            opacity: videoReadyLatch.current ? 0 : 1,
             transition: "opacity 0.6s ease",
+            pointerEvents: videoReadyLatch.current ? "none" : "auto",
           }}
         />
-        {inView && (
+
+        {/* Video hanya di-mount saat card pernah masuk viewport */}
+        {hasBeenSeen.current && (
           <div className="card-video-wrap">
+
             {videoType === "mp4" && (
               <video
                 src={p.video}
@@ -91,7 +112,7 @@ export default function Card({ p, i }: CardProps) {
                 playsInline
                 preload="none"
                 className="card-video"
-                onCanPlay={() => setVideoReady(true)}
+                onCanPlay={markVideoReady}
                 style={{
                   opacity: videoReady ? 1 : 0,
                   transition: "opacity 0.6s ease",
@@ -106,9 +127,7 @@ export default function Card({ p, i }: CardProps) {
                 allow="autoplay; encrypted-media"
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"
-                onLoad={() => {
-                  setTimeout(() => setVideoReady(true), 1800);
-                }}
+                onLoad={() => setTimeout(markVideoReady, 1800)}
                 style={{
                   position: "absolute",
                   top: "50%",
@@ -133,7 +152,7 @@ export default function Card({ p, i }: CardProps) {
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"
                 className="card-video"
-                onLoad={() => setTimeout(() => setVideoReady(true), 800)}
+                onLoad={() => setTimeout(markVideoReady, 800)}
                 style={{
                   opacity: videoReady ? 1 : 0,
                   transition: "opacity 0.6s ease",
@@ -158,7 +177,13 @@ export default function Card({ p, i }: CardProps) {
 
         <div className="card-arrow">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M1 7h12M7 1l6 6-6 6"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </div>
       </div>
